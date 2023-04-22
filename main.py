@@ -1,4 +1,5 @@
 import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 bot = telebot.TeleBot("5855917656:AAE89D3EgAGyP29h7c9De8E5tOLG4rfdLZM")
 
@@ -25,8 +26,20 @@ def send_welcome(message):
 
 @bot.message_handler(commands=["catalog"])
 def send_catalog(message):
-    bot.send_message(message.chat.id, "This is %s" % items_catalog[0]['name'])
-    bot.send_photo(message.chat.id, photo=items_catalog[0]["photo"])
+    # bot.send_message(message.chat.id, "This is %s" % items_catalog[0]['name'])
+    # bot.send_photo(message.chat.id, photo=items_catalog[0]["photo"])
+    bot.send_message(
+        message.chat.id,
+        "Hi it's catalog",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text="Go to our shop", callback_data="clicked go to shop")]]
+        ),
+    )
 
+@bot.callback_query_handler(func=lambda call: True)
+def test_callback(call):
+    print(call)
+    if call.data == "clicked go to shop":
+        bot.send_message(call.from_user.id, "Hi it is call back answer")
 
 bot.infinity_polling()
